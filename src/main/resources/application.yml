@@ -9,18 +9,42 @@ spring:
           uri: lb://EMPLOYEE-SERVICE
           predicates:
             - Path=/service-api/api/employee/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: employee-service
+                fallbackuri: forward:/employee-fallback
+
+
         - id: payslip-service
           uri: lb://PAYSLIP-SERVICE
           predicates:
             - Path=/service-api/api/payslip/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: payslip-service
+                fallbackuri: forward:/payslip-fallback
+
         - id: provident-fund-service
           uri: lb://PROVIDENT-FUND-SERVICE
           predicates:
             - Path=/service-api/api/provident-fund/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: provident-fund-service
+                fallbackuri: forward:/provident-fund-fallback
+
         - id: tax-service
           uri: lb://TAX-SERVICE
           predicates:
             - Path=/service-api/api/employee/tax/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: tax-service
+                fallbackuri: forward:/tax-fallback
 
 eureka:
   client:
@@ -33,3 +57,18 @@ eureka:
 
 server:
   port: 8989
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+
+hystrix:
+  command:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
