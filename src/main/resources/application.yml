@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: GATEWAY-SERVICE
+    #cloud gateway
+  cloud:
+    gateway:
+      routes:
+        - id: employee-service
+          uri: lb://EMPLOYEE-SERVICE
+          predicates:
+            - Path=/service-api/api/employee/**
+        - id: payslip-service
+          uri: lb://PAYSLIP-SERVICE
+          predicates:
+            - Path=/service-api/api/payslip/**
+        - id: provident-fund-service
+          uri: lb://PROVIDENT-FUND-SERVICE
+          predicates:
+            - Path=/service-api/api/provident-fund/**
+        - id: tax-service
+          uri: lb://TAX-SERVICE
+          predicates:
+            - Path=/service-api/api/employee/tax/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+server:
+  port: 8989
